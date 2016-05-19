@@ -1,0 +1,47 @@
+<section ng-controller="CategoriesController" ng-init="findOne()">
+  <div class="page-header">
+    <h1>Edit Category</h1>
+  </div>
+  <div class="col-md-12">
+    <form name="articleForm" class="form-horizontal" ng-submit="update(articleForm.$valid)" novalidate>
+      <fieldset>
+        <div class="form-group" show-errors>
+          <label for="title">Name</label>
+          <input name="title" type="text" ng-model="category.name" id="title" class="form-control" placeholder="Title" required>
+          <div ng-messages="articleForm.name.$error" role="alert">
+            <p class="help-block error-text" ng-message="required">Category name is required.</p>
+          </div>
+        </div>
+        <div class="form-group">
+
+          <label for="title">Add new tag</label>
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="new tag..." ng-model="newTag"
+                   ng-keyup="$event.keyCode == 13 ? addTag() : null">
+                <span class="input-group-btn">
+                  <button class="btn btn-default" type="button">Go!</button>
+                </span>
+          </div><!-- /input-group -->
+
+          <div class="list-group" style="max-width: 250px">
+            <a href="#" class="list-group-item clearfix" ng-repeat="tag in category.tags track by $index">
+              <span class="glyphicon glyphicon-file"></span>
+              <span class="pull-right">
+                <button class="btn btn-xs btn-info">{{tag}}</button>
+                <button class="btn btn-xs btn-warning">
+                  <span class="glyphicon glyphicon-trash" ng-click="category.tags.splice($index,1)"></span>
+                </button>
+              </span>
+            </a>
+          </div>
+        </div>
+        <div class="form-group">
+          <input type="button" class="btn btn-default" value="Save" ng-click="create()">
+        </div>
+        <div ng-show="error" class="text-danger">
+          <strong ng-bind="error"></strong>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+</section>

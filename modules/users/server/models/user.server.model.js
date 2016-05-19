@@ -117,11 +117,11 @@ UserSchema.pre('save', function (next) {
  */
 UserSchema.pre('validate', function (next) {
   if (this.provider === 'local' && this.password && this.isModified('password')) {
-    var result = owasp.test(this.password);
-    if (result.errors.length) {
-      var error = result.errors.join(' ');
-      this.invalidate('password', error);
-    }
+    //var result = owasp.test(this.password);
+    //if (result.errors.length) {
+    //  var error = result.errors.join(' ');
+    //  this.invalidate('password', error);
+    //}
   }
 
   next();
@@ -194,12 +194,12 @@ UserSchema.statics.generateRandomPassphrase = function () {
     }
 
     // Send the rejection back if the passphrase fails to pass the strength test
-    if (owasp.test(password).errors.length) {
-      reject(new Error('An unexpected problem occured while generating the random passphrase'));
-    } else {
-      // resolve with the validated passphrase
-      resolve(password);
-    }
+    //if (owasp.test(password).errors.length) {
+    //  reject(new Error('An unexpected problem occured while generating the random passphrase'));
+    //} else {
+    //  // resolve with the validated passphrase
+    //  resolve(password);
+    //}
   });
 };
 
