@@ -1,0 +1,29 @@
+<section ng-controller="UserCategoriesController" ng-init="find()">
+  <div class="col-sm-4">
+    <h1>Main Categories</h1>
+    <ul class="list-group">
+      <li class="list-group-item" ng-repeat="cat in categories" ng-click="$parent.selectedCat=cat" ng-class="{'active':cat == selectedCat}">
+        <span class="badge">{{cat.tags.length}}</span>
+        {{cat.name}}
+      </li>
+    </ul>
+  </div>
+  <div class="col-sm-4">
+    <h1>Tags</h1>
+    <div class="list-group">
+      <a href="#" class="list-group-item clearfix" ng-repeat="tag in selectedCat.tags track by $index">
+        <span class="glyphicon glyphicon-tag"></span>
+        {{tag.name}}
+      <span class="pull-right">
+
+        <button class="btn btn-xs btn-info" ng-if="!isTagExist(tag)" ng-click="addTag(tag)">
+          <span class="glyphicon glyphicon-plus" ></span>
+        </button>
+        <button class="btn btn-xs btn-warning" ng-if="isTagExist(tag)" ng-click="removeTag($index)">
+          <span class="glyphicon glyphicon-trash" ></span>
+        </button>
+      </span>
+      </a>
+    </div>
+  </div>
+</section>

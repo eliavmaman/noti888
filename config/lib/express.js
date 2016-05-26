@@ -19,6 +19,7 @@ var config = require('../config'),
   consolidate = require('consolidate'),
   path = require('path');
 
+
 /**
  * Initialize local variables
  */

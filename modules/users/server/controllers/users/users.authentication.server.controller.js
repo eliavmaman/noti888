@@ -8,6 +8,8 @@ var path = require('path'),
   mongoose = require('mongoose'),
   passport = require('passport'),
   User = mongoose.model('User');
+var Pusher = require('pusher');
+
 
 // URLs for which user can't be redirected on signin
 var noReturnUrls = [
@@ -43,6 +45,18 @@ exports.signup = function (req, res) {
 
       req.login(user, function (err) {
         if (err) {
+          var Pusher = require('pusher');
+
+          var pusher = new Pusher({
+            appId: '210806',
+            key: '8dc0631085dd95762bbe',
+            secret: '6a4dd5aab8b4d356d74d',
+            encrypted: true
+          });
+
+          pusher.trigger('test_channel', 'login', {
+            "message": "10x for login"
+          });
           res.status(400).send(err);
         } else {
           res.json(user);

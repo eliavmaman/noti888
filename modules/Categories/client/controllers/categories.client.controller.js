@@ -5,6 +5,8 @@ angular.module('categories').controller('CategoriesController', ['$scope', '$sta
     function ($scope, $stateParams, $location, Authentication, Categories) {
         $scope.authentication = Authentication;
         $scope.tags = [];
+        $scope.savedCategory = null;
+
         // Create new Category
         $scope.create = function (isValid) {
             $scope.error = null;
@@ -17,13 +19,14 @@ angular.module('categories').controller('CategoriesController', ['$scope', '$sta
 
             // Create new Category object
             var category = new Categories({
-                name: this.name,
-                tags: $scope.tags
+                name: this.name
+                //tags: $scope.tags
             });
 
             // Redirect after save
             category.$save(function (response) {
-                $location.path('categories/' + response._id);
+                //$scope.savedCategory = response;
+                 $location.path('categories/' + response._id+'/edit');
 
                 // Clear form fields
                 $scope.title = '';
@@ -54,11 +57,11 @@ angular.module('categories').controller('CategoriesController', ['$scope', '$sta
         $scope.update = function (isValid) {
             $scope.error = null;
 
-            if (!isValid) {
-                $scope.$broadcast('show-errors-check-validity', 'articleForm');
-
-                return false;
-            }
+            //if (!isValid) {
+            //    $scope.$broadcast('show-errors-check-validity', 'articleForm');
+            //
+            //    return false;
+            //}
 
             var category = $scope.category;
 
@@ -86,7 +89,7 @@ angular.module('categories').controller('CategoriesController', ['$scope', '$sta
                 $scope.tags.push(this.newTag);
 
                 if ($scope.category) {
-                    $scope.category.tags.push(this.newTag);
+                    $scope.category.tags.push({name: this.newTag, category: $scope.category._id});
                 }
             }
         }

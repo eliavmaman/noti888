@@ -84,6 +84,12 @@ var UserSchema = new Schema({
     default: ['user'],
     required: 'Please provide at least one role'
   },
+  tags: [
+    {
+      name: 'String',
+      category: 'String'
+    }
+  ],
   updated: {
     type: Date
   },
@@ -97,7 +103,8 @@ var UserSchema = new Schema({
   },
   resetPasswordExpires: {
     type: Date
-  }
+  },
+
 });
 
 /**

@@ -1,6 +1,6 @@
 <section ng-controller="CategoriesController" ng-init="findOne()">
   <div class="page-header">
-    <h1>Edit Category</h1>
+    <h1>Edit Category - <span style="color: orange">{{category.name}}</span></h1>
   </div>
   <div class="col-md-12">
     <form name="articleForm" class="form-horizontal" ng-submit="update(articleForm.$valid)" novalidate>
@@ -27,7 +27,7 @@
             <a href="#" class="list-group-item clearfix" ng-repeat="tag in category.tags track by $index">
               <span class="glyphicon glyphicon-file"></span>
               <span class="pull-right">
-                <button class="btn btn-xs btn-info">{{tag}}</button>
+                <button class="btn btn-xs btn-info">{{tag.name}}</button>
                 <button class="btn btn-xs btn-warning">
                   <span class="glyphicon glyphicon-trash" ng-click="category.tags.splice($index,1)"></span>
                 </button>
@@ -36,7 +36,7 @@
           </div>
         </div>
         <div class="form-group">
-          <input type="button" class="btn btn-default" value="Save" ng-click="create()">
+          <input type="button" class="btn btn-default" value="Save" ng-click="update()">
         </div>
         <div ng-show="error" class="text-danger">
           <strong ng-bind="error"></strong>
