@@ -77,6 +77,7 @@ exports.forgot = function (req, res, next) {
         subject: 'Password Reset',
         html: emailHTML
       };
+      console.log(JSON.stringify(smtpTransport));
       smtpTransport.sendMail(mailOptions, function (err) {
         if (!err) {
           res.send({

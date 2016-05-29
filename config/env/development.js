@@ -68,10 +68,10 @@ module.exports = {
   mailer: {
     from: process.env.MAILER_FROM || 'MAILER_FROM',
     options: {
-      service: process.env.MAILER_SERVICE_PROVIDER || 'MAILER_SERVICE_PROVIDER',
+      service: process.env.MAILER_SERVICE_PROVIDER || 'Mailgun',
       auth: {
-        user: process.env.MAILER_EMAIL_ID || 'MAILER_EMAIL_ID',
-        pass: process.env.MAILER_PASSWORD || 'MAILER_PASSWORD'
+        user: process.env.MAILER_EMAIL_ID || 'postmaster@appaaed40526d724748aa1411e8b2f5a324.mailgun.org',
+        pass: process.env.MAILER_PASSWORD || '97df2446070766843dc7498097ff8575'
       }
     }
   },
