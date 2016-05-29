@@ -108,3 +108,19 @@ exports.articleByID = function (req, res, next, id) {
     next();
   });
 };
+
+
+exports.articlesByTag= function (req, res) {
+var tagId=req.params.tagId;
+  Article.find({'tag._id':tagId}).populate('user', 'displayName').exec(function (err, articles) {
+    if (err) {
+      return next(err);
+    } else if (!articles) {
+      return res.status(404).send({
+        message: 'No article with that identifier has been found'
+      });
+    }
+    res.json(articles);
+  });
+};
+

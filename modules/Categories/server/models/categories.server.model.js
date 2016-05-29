@@ -21,6 +21,7 @@ var CategorySchema = new Schema({
     },
     tags: [
         {
+            _id:'String',
             name: 'String',
             category: 'String'
         }

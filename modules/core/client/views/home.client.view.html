@@ -11,10 +11,18 @@
   <div class="col-sm-4">
     <h1>Tags</h1>
     <div class="list-group">
-      <a href="#" class="list-group-item clearfix" ng-repeat="tag in selectedCat.tags">
+      <a href="#" class="list-group-item clearfix" ng-repeat="tag in selectedCat.tags" ng-click="selectedTag(tag)">
         <span class="glyphicon glyphicon-tag"></span>
         {{tag.name}}
-
+      </a>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <h1>{{selectedTag.name}} Articles</h1>
+    <div class="list-group">
+      <a class="list-group-item clearfix" ng-repeat="article in articles" href="/articles/{{article._id}}" >
+        <span class="glyphicon glyphicon-tag"></span>
+        {{article.title}}
       </a>
     </div>
   </div>

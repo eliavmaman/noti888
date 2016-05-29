@@ -13,7 +13,7 @@
         </div>
         <div class="form-group">
           <label for="title">Tags</label>
-          <select class="form-control" ng-model="selectedTag" ng-options="tag for tag in selectedCategory.tags">
+          <select class="form-control" ng-model="selectedTag" ng-options="tag as tag.name for tag in selectedCategory.tags">
             <option value="">Selecte tag</option>
           </select>
         </div>
@@ -27,8 +27,12 @@
         </div>
         <div class="form-group">
           <label for="content">Content</label>
-          <textarea name="content" ng-model="content" id="content" class="form-control" cols="30" rows="10"
-                    placeholder="Content" ng-disabled="selectedTag==''" redactor="{buttons: ['formatting', '|', 'bold', 'italic']}" ></textarea>
+          <textarea ui-tinymce="tinymceOptions" ng-model="content">
+
+          </textarea>
+          <!--<ng-wig ng-model="content"></ng-wig>-->
+          <!--<textarea name="content" ng-model="content" id="content" class="form-control" cols="30" rows="10"-->
+                    <!--placeholder="Content" ng-disabled="selectedTag==''" redactor="{buttons: ['formatting', '|', 'bold', 'italic']}" ></textarea>-->
         </div>
         <div class="form-group">
           <input type="submit" class="btn btn-default">
