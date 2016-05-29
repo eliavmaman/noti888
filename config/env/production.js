@@ -67,14 +67,22 @@ module.exports = {
     sandbox: false
   },
   mailer: {
-    from: process.env.MAILER_FROM || 'MAILER_FROM',
+    from: 'noreply@noti888.com',
     options: {
-      service: process.env.MAILER_SERVICE_PROVIDER || 'MAILER_SERVICE_PROVIDER',
+      service: 'Mailgun',
       auth: {
-        user: process.env.MAILER_EMAIL_ID || 'MAILER_EMAIL_ID',
-        pass: process.env.MAILER_PASSWORD || 'MAILER_PASSWORD'
+        user: 'postmaster@appaaed40526d724748aa1411e8b2f5a324.mailgun.org',
+        pass: '97df2446070766843dc7498097ff8575'
       }
     }
+    //from: process.env.MAILER_FROM || 'MAILER_FROM',
+    //options: {
+    //  service: process.env.MAILER_SERVICE_PROVIDER || 'MAILER_SERVICE_PROVIDER',
+    //  auth: {
+    //    user: process.env.MAILER_EMAIL_ID || 'MAILER_EMAIL_ID',
+    //    pass: process.env.MAILER_PASSWORD || 'MAILER_PASSWORD'
+    //  }
+    //}
   },
   seedDB: {
     seed: process.env.MONGO_SEED === 'true' ? true : false,
