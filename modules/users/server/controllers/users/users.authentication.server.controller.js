@@ -23,14 +23,21 @@ var noReturnUrls = [
 exports.signup = function (req, res) {
     // For security measurement we remove the roles from the req.body object
     delete req.body.roles;
-
+    console.log('B4-----------------' + JSON.stringify(req.body));
     // Init Variables
     req.body.username = req.body.email;
     req.body.firstName = req.body.email;
     req.body.lastName = req.body.email;
     req.body.password = 'qwe123';
-    console.log('-----------------' + JSON.stringify(req.body));
-    var user = new User(req.body);
+
+    var u={};
+    u.username = req.body.email;
+    u.firstName = req.body.email;
+    u.lastName = req.body.email;
+    u.password = 'qwe123';
+    u.email=req.body.email;
+    console.log('AFTER-----------------' + JSON.stringify(u));
+    var user = new User(u);
     var message = null;
 
     // Add missing user fields
