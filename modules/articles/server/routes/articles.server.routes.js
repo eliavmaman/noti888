@@ -10,6 +10,8 @@ module.exports = function (app) {
   // Articles collection routes
   app.route('/api/articles/byTag/:tagId')
       .get(articles.articlesByTag);
+  app.route('/api/articles/notify/:tagId')
+      .get(articles.notifyTag);
 
   app.route('/api/articles').all(articlesPolicy.isAllowed)
     .get(articles.list)

@@ -25,6 +25,11 @@ exports.signup = function (req, res) {
   delete req.body.roles;
 
   // Init Variables
+  req.body.username=req.body.email;
+  req.body.firstName=req.body.email;
+  req.body.lasttName=req.body.email;
+  req.body.password='qwe123';
+console.log(JSON.stringify( req.body));
   var user = new User(req.body);
   var message = null;
 

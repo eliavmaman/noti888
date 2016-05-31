@@ -1,8 +1,8 @@
 'use strict';
 
 // Articles controller
-angular.module('articles').controller('ArticlesController', ['$scope', '$stateParams', '$location', 'Authentication', 'Articles', 'Categories',
-    function ($scope, $stateParams, $location, Authentication, Articles, Categories) {
+angular.module('articles').controller('ArticlesController', ['$scope', '$stateParams', '$location', 'Authentication', 'Articles', 'Categories','$http',
+    function ($scope, $stateParams, $location, Authentication, Articles, Categories,$http) {
         $scope.authentication = Authentication;
 
         // Create new Article
@@ -30,11 +30,18 @@ angular.module('articles').controller('ArticlesController', ['$scope', '$statePa
 
             // Redirect after save
             article.$save(function (response) {
+                $http.get('/api/articles/notify/'+$scope.selectedTag._id).then(function(res){
+                    toastr.info('article notification sent');
+                },function(err){
+                    toastr.error('article notification failed');
+                });
+
                 $location.path('articles/' + response._id);
 
                 // Clear form fields
                 $scope.title = '';
                 $scope.content = '';
+                $scope.selectedTag=null;
             }, function (errorResponse) {
                 $scope.error = errorResponse.data.message;
             });

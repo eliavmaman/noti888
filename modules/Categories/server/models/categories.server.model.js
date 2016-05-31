@@ -19,13 +19,21 @@ var CategorySchema = new Schema({
         default: '',
         trim: true
     },
-    tags: [
-        {
-            _id:'String',
-            name: 'String',
-            category: 'String'
-        }
+    tags:[
+            {
+                message: 'String',
+                user: {
+                    type: Schema.ObjectId,
+                    ref: 'User'
+                }
+            }
     ],
+    //tags: [
+    //    {
+    //        name: 'String',
+    //        category: 'String'
+    //    }
+    //],
     user: {
         type: Schema.ObjectId,
         ref: 'User'
