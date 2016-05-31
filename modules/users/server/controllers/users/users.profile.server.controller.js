@@ -102,5 +102,90 @@ exports.me = function (req, res) {
     res.json(req.user || null);
 };
 
+exports.addTag = function (req, res) {
+    var tagId = req.body.tagId;
+    var tagName = req.body.tagName;
+    var category = req.body.category;
+    var exist_user = req.user;
+    console.log('USERID -' + exist_user._id);
+    console.log('tagId -' + tagId + ' tagna- ' + tagName + ' category- ' + category);
+    return User.findOne({
+        _id: exist_user._id
+    }, function (err, user) {
+        if (err) {
+            return done(err);
+        }
+        //if (!user || !user.authenticate(password)) {
+        //    return done(null, false, {
+        //        message: 'Invalid username or password'
+        //    });
+        //}
+        user.tags.push({
+            _id: tagId,
+            name: tagName,
+            category: category,
+        });
+        user.save(function (err) {
+            if (err) {
+                return res.status(400).send({
+                    message: errorHandler.getErrorMessage(err)
+                });
+            } else {
+                req.login(user, function (err) {
+                    if (err) {
+                        res.status(400).send(err);
+                    } else {
+                        res.json(user);
+                    }
+                });
+            }
+        });
+
+    });
+    //   res.json(req.user || null);
+};
+
+exports.removeTag = function (req, res) {
+    var tagId = req.params.tagId;
+    var exist_user = req.user;
+    console.log('USERID -' + exist_user._id);
+    console.log('tagId -' + tagId);
+    return User.findOne({
+        _id: exist_user._id
+    }, function (err, user) {
+        if (err) {
+            return done(err);
+        }
+        var tags = [];
+        user.tags.forEach(function (t) {
+            if (t._id.toString() !== tagId.toString()) {
+                tags.push(t);
+            }
+        });
+
+        user.tags = tags;
+        user.save(function (err) {
+            if (err) {
+                return res.status(400).send({
+                    message: errorHandler.getErrorMessage(err)
+                });
+            } else {
+                req.login(user, function (err) {
+                    if (err) {
+                        res.status(400).send(err);
+                    } else {
+                        res.json(user);
+                    }
+                });
+            }
+        });
+
+    });
+    //   res.json(req.user || null);
+};
+
+
+
+
 
 

@@ -19,14 +19,14 @@ angular.module('categories').controller('CategoriesController', ['$scope', '$sta
 
             // Create new Category object
             var category = new Categories({
-                name: this.name
-                //tags: $scope.tags
+                name: this.name,
+                tags: []
             });
 
             // Redirect after save
             category.$save(function (response) {
                 //$scope.savedCategory = response;
-                 $location.path('categories/' + response._id+'/edit');
+                $location.path('categories/' + response._id + '/edit');
 
                 // Clear form fields
                 $scope.title = '';
@@ -89,7 +89,7 @@ angular.module('categories').controller('CategoriesController', ['$scope', '$sta
                 $scope.tags.push(this.newTag);
 
                 if ($scope.category) {
-                    $scope.category.tags.push({name: this.newTag, category: $scope.category._id});
+                    $scope.category.tags.push({name: this.newTag, category: $scope.category._id, messages: []});
                 }
             }
         }

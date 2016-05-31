@@ -4,107 +4,175 @@
  * Module dependencies.
  */
 var path = require('path'),
-  mongoose = require('mongoose'),
-  Category = mongoose.model('Category'),
-  errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller'));
+    mongoose = require('mongoose'),
+    Category = mongoose.model('Category'),
+    errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller'));
+
+var _ =require('lodash');
 
 /**
  * Create a category
  */
 exports.create = function (req, res) {
-  var category = new Category(req.body);
-  category.user = req.user;
+    var category = new Category(req.body);
+    category.user = req.user;
 
-  category.save(function (err) {
-    if (err) {
-      return res.status(400).send({
-        message: errorHandler.getErrorMessage(err)
-      });
-    } else {
-      res.json(category);
-    }
-  });
+    category.save(function (err) {
+        if (err) {
+            return res.status(400).send({
+                message: errorHandler.getErrorMessage(err)
+            });
+        } else {
+            res.json(category);
+        }
+    });
 };
 
 /**
  * Show the current category
  */
 exports.read = function (req, res) {
-  res.json(req.category);
+    res.json(req.category);
 };
 
 /**
  * Update a category
  */
 exports.update = function (req, res) {
-  var category = req.category;
+    var category = req.category;
 
-  category.name = req.body.name;
-  category.tags = req.body.tags;
+    category.name = req.body.name;
+    category.tags = req.body.tags;
 
-  category.save(function (err) {
-    if (err) {
-      return res.status(400).send({
-        message: errorHandler.getErrorMessage(err)
-      });
-    } else {
-      res.json(category);
-    }
-  });
+    category.save(function (err) {
+        if (err) {
+            return res.status(400).send({
+                message: errorHandler.getErrorMessage(err)
+            });
+        } else {
+            res.json(category);
+        }
+    });
 };
 
 /**
  * Delete an category
  */
 exports.delete = function (req, res) {
-  var category = req.category;
+    var category = req.category;
 
-  category.remove(function (err) {
-    if (err) {
-      return res.status(400).send({
-        message: errorHandler.getErrorMessage(err)
-      });
-    } else {
-      res.json(category);
-    }
-  });
+    category.remove(function (err) {
+        if (err) {
+            return res.status(400).send({
+                message: errorHandler.getErrorMessage(err)
+            });
+        } else {
+            res.json(category);
+        }
+    });
 };
 
 /**
  * List of Articles
  */
 exports.list = function (req, res) {
-  Category.find().sort('-created').populate('user', 'displayName').exec(function (err, categories) {
-    if (err) {
-      return res.status(400).send({
-        message: errorHandler.getErrorMessage(err)
-      });
-    } else {
-      res.json(categories);
-    }
-  });
+    Category.find().sort('-created').populate('user', 'displayName').exec(function (err, categories) {
+        if (err) {
+            return res.status(400).send({
+                message: errorHandler.getErrorMessage(err)
+            });
+        } else {
+            res.json(categories);
+        }
+    });
 };
+
+exports.getTagMessages = function (req, res) {
+    var categoryId = req.params.categoryId;
+    var tagId = req.params.tagId;
+    console.log('TAg id ' + tagId);
+    Category.findOne({_id: categoryId}).sort('-created').populate('user', 'displayName').exec(function (err, category) {
+        if (err) {
+            return res.status(400).send({
+                message: errorHandler.getErrorMessage(err)
+            });
+        } else {
+            console.log('CATEGORY ' + JSON.stringify(category));
+            var tag = _.find(category.tags, function (t) {
+                return t._id.toString() === tagId.toString();
+            });
+            console.log('Tag ' + JSON.stringify(tag));
+            if (tag) {
+                res.json(tag.messages);
+            } else {
+                res.json([]);
+            }
+
+
+        }
+    });
+};
+
+exports.addMessage = function (req, res) {
+    var categoryId = req.params.categoryId;
+    var tagId = req.params.tagId;
+    var message=req.body.text;
+    var user=req.body.user;
+
+    console.log('TAg id ' + tagId);
+    Category.findOne({_id: categoryId}).sort('-created').populate('user', 'displayName').exec(function (err, category) {
+        if (err) {
+            return res.status(400).send({
+                message: errorHandler.getErrorMessage(err)
+            });
+        } else {
+            console.log('CATEGORY ' + JSON.stringify(category));
+            var tag = _.find(category.tags, function (t) {
+                return t._id.toString() === tagId.toString();
+            });
+            console.log('Tag ' + JSON.stringify(tag));
+            if (tag) {
+               tag.messages.push({text:message,user:user});
+                category.save(function (err) {
+                    if (err) {
+                        return res.status(400).send({
+                            message: errorHandler.getErrorMessage(err)
+                        });
+                    } else {
+                        res.json([tag.messages]);
+                    }
+                });
+
+            } else {
+                res.json([]);
+            }
+
+
+        }
+    });
+};
+
 
 /**
  * Category middleware
  */
-exports.articleByID = function (req, res, next, id) {
+exports.categoryByID = function (req, res, next, id) {
 
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).send({
-      message: 'Category is invalid'
-    });
-  }
-
-  Category.findById(id).populate('user', 'displayName').exec(function (err, category) {
-    if (err) {
-      return next(err);
-    } else if (!category) {
-      return res.status(404).send({
-        message: 'No category with that identifier has been found'
-      });
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).send({
+            message: 'Category is invalid'
+        });
     }
-    req.category = category;
-    next();
-  });
+
+    Category.findById(id).populate('user', 'displayName').exec(function (err, category) {
+        if (err) {
+            return next(err);
+        } else if (!category) {
+            return res.status(404).send({
+                message: 'No category with that identifier has been found'
+            });
+        }
+        req.category = category;
+        next();
+    });
 };

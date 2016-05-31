@@ -7,6 +7,10 @@ var categoriesPolicy = require('../policies/categories.server.policy'),
   categories = require('../controllers/categories.server.controller');
 
 module.exports = function (app) {
+  app.route('/api/categories/:categoryId/tags/:tagId')
+      .get(categories.getTagMessages);
+  app.route('/api/categories/:categoryId/tags/:tagId/message')
+      .post(categories.addMessage);
   // Articles collection routes
   app.route('/api/categories').all(categoriesPolicy.isAllowed)
     .get(categories.list)
@@ -19,5 +23,5 @@ module.exports = function (app) {
     .delete(categories.delete);
 
   // Finish by binding the article middleware
-  app.param('categoryId', categories.articleByID);
+  app.param('categoryId', categories.categoryByID);
 };

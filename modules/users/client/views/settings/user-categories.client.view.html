@@ -19,7 +19,7 @@
         <button class="btn btn-xs btn-info" ng-if="!isTagExist(tag)" ng-click="addTag(tag)">
           <span class="glyphicon glyphicon-plus" ></span>
         </button>
-        <button class="btn btn-xs btn-warning" ng-if="isTagExist(tag)" ng-click="removeTag($index)">
+        <button class="btn btn-xs btn-warning" ng-if="isTagExist(tag)" ng-click="removeTag(tag)">
           <span class="glyphicon glyphicon-trash" ></span>
         </button>
       </span>

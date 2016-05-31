@@ -24,13 +24,30 @@ angular.module('core').controller('UserCategoriesController', ['$scope', 'Authen
 
 
         $scope.addTag = function (tag) {
-            $scope.user.tags.push(tag);
-            updateUser();
+            var tagObj = {
+                tagId: tag._id,
+                tagName: tag.name,
+                category: tag.category,
+            };
+
+            $http.post('api/users/tag', tagObj).
+            then(function (res) {
+                var user = res.data;
+            });
+            //$http.post('api/categories/' + tag.category + '/tags/' + tag._id).then(function (res) {
+            //    var user = res.data;
+            //});
+            //   $scope.user.tags.push(tag);
+            //updateUser();
         };
-        $scope.removeTag = function (index) {
-            $scope.user.tags.splice(index, 1);
-            updateUser();
+        $scope.removeTag = function (tag) {
+            $http.delete('api/users/tag/' + tag._id).
+            then(function (res) {
+                var user = res.data;
+            });
         };
+
+
 
         function updateUser() {
             var user = new Users($scope.user);
@@ -39,7 +56,7 @@ angular.module('core').controller('UserCategoriesController', ['$scope', 'Authen
                 //$scope.$broadcast('show-errors-reset', 'userForm');
                 toastr.info('user tags were updated');
                 $scope.success = true;
-                $scope.user=response;
+                $scope.user = response;
                 Authentication.user = response;
             }, function (response) {
                 $scope.error = response.data.message;
