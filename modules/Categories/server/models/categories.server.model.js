@@ -25,9 +25,10 @@ var CategorySchema = new Schema({
                 category:'String',
                 messages: [{
                     text: 'String',
-                    user: {
-                        type: Schema.ObjectId,
-                        ref: 'User'
+                    email:'String',
+                    created: {
+                        type: Date,
+                        default: Date.now
                     }
                 }]
             }

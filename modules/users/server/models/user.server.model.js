@@ -86,7 +86,7 @@ var UserSchema = new Schema({
     },
     tags: [
         {
-            counter:'Number',
+            counter:{type:Number,default:0},
             name: 'String',
             category: 'String'
         }

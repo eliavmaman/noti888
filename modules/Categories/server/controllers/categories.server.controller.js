@@ -135,6 +135,7 @@ exports.addMessage = function (req, res) {
     var categoryId = req.params.categoryId;
     var tagId = req.params.tagId;
     var message=req.body.text;
+    var email=req.body.email;
     var user=req.body.user;
 
     console.log('TAg id ' + tagId);
@@ -150,7 +151,7 @@ exports.addMessage = function (req, res) {
             });
             console.log('Tag ' + JSON.stringify(tag));
             if (tag) {
-               tag.messages.push({text:message,user:user});
+               tag.messages.push({text:message,email:email});
                 category.save(function (err) {
                     if (err) {
                         return res.status(400).send({
