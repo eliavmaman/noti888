@@ -7,7 +7,7 @@ var path = require('path'),
     mongoose = require('mongoose'),
     Category = mongoose.model('Category'),
     errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller'));
-
+var gcm = require('node-gcm');
 var _ =require('lodash');
 
 /**
@@ -91,6 +91,26 @@ exports.getTagMessages = function (req, res) {
     var categoryId = req.params.categoryId;
     var tagId = req.params.tagId;
     console.log('TAg id ' + tagId);
+    var message = new gcm.Message({
+        collapseKey: 'demo',
+        priority: 'high',
+        contentAvailable: true,
+        delayWhileIdle: true,
+        timeToLive: 3,
+        restrictedPackageName: "somePackageName",
+        dryRun: true,
+        data: {
+            key1: 'message1',
+            key2: 'message2'
+        },
+        notification: {
+            title: "Hello, World",
+            icon: "ic_launcher",
+            body: "This is a notification that will be displayed ASAP."
+        }
+    });
+    var sender = new gcm.Sender('AIzaSyC4z6DS37mFtIrpn55Yicr59SpA84WV7nE');
+
     Category.findOne({_id: categoryId}).sort('-created').populate('user', 'displayName').exec(function (err, category) {
         if (err) {
             return res.status(400).send({
@@ -107,8 +127,6 @@ exports.getTagMessages = function (req, res) {
             } else {
                 res.json([]);
             }
-
-
         }
     });
 };
