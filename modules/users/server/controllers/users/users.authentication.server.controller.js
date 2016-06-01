@@ -25,19 +25,9 @@ exports.signup = function (req, res) {
     delete req.body.roles;
     console.log('B4-----------------' + JSON.stringify(req.body));
     // Init Variables
-    req.body.username = req.body.email;
-    req.body.firstName = req.body.email;
-    req.body.lastName = req.body.email;
-    req.body.password = 'qwe123';
 
-    var u = {};
-    u.username = req.body.email;
-    u.firstName = req.body.email;
-    u.lastName = req.body.email;
-    u.password = 'qwe123';
-    u.email = req.body.email;
-    console.log('AFTER-----------------' + JSON.stringify(u));
-    var user = new User(u);
+
+    var user = new User(req.body);
     var message = null;
 
     // Add missing user fields
@@ -57,18 +47,7 @@ exports.signup = function (req, res) {
 
             req.login(user, function (err) {
                 if (err) {
-                    var Pusher = require('pusher');
 
-                    var pusher = new Pusher({
-                        appId: '210806',
-                        key: '8dc0631085dd95762bbe',
-                        secret: '6a4dd5aab8b4d356d74d',
-                        encrypted: true
-                    });
-
-                    pusher.trigger('test_channel', 'login', {
-                        "message": "10x for login"
-                    });
                     res.status(400).send(err);
                 } else {
                     res.json(user);
