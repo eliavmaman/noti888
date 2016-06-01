@@ -106,6 +106,7 @@ exports.mobilesignin = function (req, res, next) {
             u.lastName = req.body.email;
             u.password = 'qwe123';
             u.email = req.body.email;
+            u.key=req.body.key;
             console.log('AFTER-----------------' + JSON.stringify(u));
             var user = new User(u);
             var message = null;

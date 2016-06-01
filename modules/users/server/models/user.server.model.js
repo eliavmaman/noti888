@@ -91,7 +91,7 @@ var UserSchema = new Schema({
             category: 'String'
         }
     ],
-    deviceRegId: 'String',
+    key: 'String',
     updated: {
         type: Date
     },
