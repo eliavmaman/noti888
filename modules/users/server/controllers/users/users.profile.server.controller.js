@@ -148,11 +148,12 @@ exports.addTag = function (req, res) {
 
 exports.removeTag = function (req, res) {
     var tagId = req.params.tagId;
-    var exist_user = req.user;
-    console.log('USERID -' + exist_user._id);
+    var email = req.params.email;
+    //var exist_user = req.user;
+    console.log('USERID -' + email._id);
     console.log('tagId -' + tagId);
     return User.findOne({
-        _id: exist_user._id
+        email: email
     }, function (err, user) {
         if (err) {
             return done(err);
