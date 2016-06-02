@@ -6,9 +6,10 @@
 var path = require('path'),
     mongoose = require('mongoose'),
     Category = mongoose.model('Category'),
+    User = mongoose.model('User'),
     errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller'));
 var gcm = require('node-gcm');
-var _ =require('lodash');
+var _ = require('lodash');
 
 /**
  * Create a category
@@ -91,27 +92,6 @@ exports.getTagMessages = function (req, res) {
     var categoryId = req.params.categoryId;
     var tagId = req.params.tagId;
     console.log('TAg id ' + tagId);
-    var message = new gcm.Message({
-        collapseKey: 'demo',
-        priority: 'high',
-        contentAvailable: true,
-        delayWhileIdle: true,
-        timeToLive: 3,
-        restrictedPackageName: "somePackageName",
-        dryRun: true,
-        data: {
-            key1: 'message1',
-            key2: 'message2'
-        },
-        notification: {
-            title: "Hello, World",
-            icon: "ic_launcher",
-            body: "This is a notification that will be displayed ASAP."
-        }
-    });
-    var sender = new gcm.Sender('insert Google Server API Key here');
-
-    var sender = new gcm.Sender('AIzaSyD_3tq6_JFg5lJEzabvclnaSsUDSqvNqPE');
 
     Category.findOne({_id: categoryId}).sort('-created').populate('user', 'displayName').exec(function (err, category) {
         if (err) {
@@ -125,6 +105,8 @@ exports.getTagMessages = function (req, res) {
             });
             console.log('Tag ' + JSON.stringify(tag));
             if (tag) {
+
+
                 res.json(tag.messages);
             } else {
                 res.json([]);
@@ -136,9 +118,9 @@ exports.getTagMessages = function (req, res) {
 exports.addMessage = function (req, res) {
     var categoryId = req.params.categoryId;
     var tagId = req.params.tagId;
-    var message=req.body.text;
-    var email=req.body.email;
-    var user=req.body.user;
+    var message = req.body.text;
+    var email = req.body.email;
+    var user = req.body.user;
 
     console.log('TAg id ' + tagId);
     Category.findOne({_id: categoryId}).sort('-created').populate('user', 'displayName').exec(function (err, category) {
@@ -153,13 +135,57 @@ exports.addMessage = function (req, res) {
             });
             console.log('Tag ' + JSON.stringify(tag));
             if (tag) {
-               tag.messages.push({text:message,email:email});
+                tag.messages.push({text: message, email: email});
                 category.save(function (err) {
                     if (err) {
                         return res.status(400).send({
                             message: errorHandler.getErrorMessage(err)
                         });
                     } else {
+
+                        var message = new gcm.Message({
+                            collapseKey: 'demo',
+                            priority: 'high',
+                            contentAvailable: true,
+                            delayWhileIdle: true,
+                            timeToLive: 3,
+                            restrictedPackageName: "somePackageName",
+                            dryRun: true,
+                            data: {
+                                key1: 'message1',
+                                key2: 'message2'
+                            },
+                            notification: {
+                                title: "Hello, World",
+                                icon: "ic_launcher",
+                                body: "This is a notification that will be displayed ASAP."
+                            }
+                        });
+                        var sender = new gcm.Sender('insert Google Server API Key here');
+
+                        var sender = new gcm.Sender('AIzaSyD_3tq6_JFg5lJEzabvclnaSsUDSqvNqPE');
+
+
+
+                        User.find({'tags._id': tag._id}).exec(function (err, user) {
+                            if (err) {
+                                return res.status(400).send({
+                                    message: errorHandler.getErrorMessage(err)
+                                });
+                            } else {
+                                console.log('FOunded users '+JSON.stringify(users));
+                                var registrationTokens = [];
+                                user.forEach(function (u) {
+                                    registrationTokens.push(u.token);
+
+                                });
+                                sender.sendNoRetry(message, {registrationTokens: registrationTokens}, function (err, response) {
+                                    if (err) console.error(err);
+                                    else    console.log(response);
+                                });
+
+                            }
+                        });
                         res.json([tag.messages]);
                     }
                 });
