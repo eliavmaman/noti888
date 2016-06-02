@@ -146,27 +146,29 @@ exports.addMessage = function (req, res) {
                     } else {
                         console.log('tags saved with new message');
                         console.log('before sending message');
-                        var message = new gcm.Message({
-                            collapseKey: 'demo',
-                            priority: 'high',
-                            contentAvailable: true,
-                            delayWhileIdle: true,
-                            timeToLive: 3,
-                            restrictedPackageName: "com.holdings888.noti",
-                            dryRun: true,
-                            data: {
-                                key1: 'message1',
-                                key2: 'message2'
-                            },
-                            notification: {
-                                title: "Hello, World",
-                                icon: "ic_launcher",
-                                body: "This is a notification that will be displayed ASAP."
-                            }
-                        });
+                        //var message = new gcm.Message({
+                        //    collapseKey: 'demo',
+                        //    priority: 'high',
+                        //    contentAvailable: true,
+                        //    delayWhileIdle: true,
+                        //    timeToLive: 3,
+                        //    restrictedPackageName: "com.holdings888.noti",
+                        //    dryRun: true,
+                        //    data: {
+                        //        key1: 'message1',
+                        //        key2: 'message2'
+                        //    },
+                        //    notification: {
+                        //        title: "Hello, World",
+                        //        icon: "ic_launcher",
+                        //        body: "This is a notification that will be displayed ASAP."
+                        //    }
+                        //});
+                        var message = new gcm.Message();
+                        message.addData('key1','hello vaturi');
+                        message.delay_while_idle = 1;
 
                         var sender = new gcm.Sender('AIzaSyD_3tq6_JFg5lJEzabvclnaSsUDSqvNqPE');
-
 
                         console.log('GCM OBJECT is '+JSON.stringify(sender));
                         User.find({'tags._id': tag._id}).exec(function (err, users) {
@@ -175,7 +177,7 @@ exports.addMessage = function (req, res) {
                                     message: errorHandler.getErrorMessage(err)
                                 });
                             } else {
-                                console.log('FOunded users ' + JSON.stringify(users));
+                                console.log('Founded users ' + JSON.stringify(users));
                                 var registrationTokens = [];
                                 users.forEach(function (u) {
                                     registrationTokens.push(u.token);
@@ -184,7 +186,6 @@ exports.addMessage = function (req, res) {
                                     if (err) console.error(err);
                                     else    console.log(response);
                                 });
-
                             }
                         });
                         res.json([tag.messages]);
