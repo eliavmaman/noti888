@@ -178,9 +178,8 @@ exports.addMessage = function (req, res) {
                                 var registrationTokens = [];
                                 users.forEach(function (u) {
                                     registrationTokens.push(u.token);
-
                                 });
-                                sender.sendNoRetry(message, {registrationTokens: registrationTokens}, function (err, response) {
+                                sender.send(message, {registrationTokens: registrationTokens}, function (err, response) {
                                     if (err) console.error(err);
                                     else    console.log(response);
                                 });
