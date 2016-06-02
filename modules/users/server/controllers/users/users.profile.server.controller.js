@@ -148,7 +148,7 @@ exports.addTag = function (req, res) {
 
 exports.removeTag = function (req, res) {
     var tagId = req.params.tagId;
-    var email = req.params.email;
+    var email = req.query.email;
     //var exist_user = req.user;
     console.log('USERID -' + email._id);
     console.log('tagId -' + tagId);
