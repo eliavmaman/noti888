@@ -168,7 +168,7 @@ exports.addMessage = function (req, res) {
                         var sender = new gcm.Sender('AIzaSyD_3tq6_JFg5lJEzabvclnaSsUDSqvNqPE');
 
                         console.log('GCM OBJECT is '+JSON.stringify(sender));
-                        User.find({'tags._id': tag._id}).exec(function (err, user) {
+                        User.find({'tags._id': tag._id}).exec(function (err, users) {
                             if (err) {
                                 return res.status(400).send({
                                     message: errorHandler.getErrorMessage(err)
