@@ -10,6 +10,7 @@ var path = require('path'),
     errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller'));
 var gcm = require('node-gcm');
 var _ = require('lodash');
+var http = require('http');
 
 /**
  * Create a category
@@ -164,13 +165,35 @@ exports.addMessage = function (req, res) {
                         //        body: "This is a notification that will be displayed ASAP."
                         //    }
                         //});
-                        var message = new gcm.Message();
-                        message.addData('key1','hello vaturi');
-                        message.delay_while_idle = 1;
 
-                        var sender = new gcm.Sender('AIzaSyD_3tq6_JFg5lJEzabvclnaSsUDSqvNqPE');
 
-                        console.log('GCM OBJECT is '+JSON.stringify(sender));
+                        var post_dat = {
+                            collapseKey: 'demo',
+                            data: {
+                                key1: 'message1',
+                                key2: 'message2'
+                            }
+                        };
+                        var options = {
+                            hostname: 'android.googleapis.com',
+                            port: 80,
+                            path: 'gcm/send',
+                            method: 'POST',
+                            headers: {
+                                'content-type': 'application/json',
+                                'content-length': post_dat.length,
+                                'authorization': 'key=AIzaSyD_3tq6_JFg5lJEzabvclnaSsUDSqvNqPE'
+                            }
+                        };
+
+
+                        //var message = new gcm.Message();
+                        //message.addData('key1', 'hello XXX');
+                        //message.delay_while_idle = 1;
+                        //
+                        //var sender = new gcm.Sender('AIzaSyD_3tq6_JFg5lJEzabvclnaSsUDSqvNqPE');
+
+                        // console.log('GCM OBJECT is ' + JSON.stringify(sender));
                         User.find({'tags._id': tag._id}).exec(function (err, users) {
                             if (err) {
                                 return res.status(400).send({
@@ -182,10 +205,25 @@ exports.addMessage = function (req, res) {
                                 users.forEach(function (u) {
                                     registrationTokens.push(u.token);
                                 });
-                                sender.send(message, {registrationTokens: registrationTokens}, function (err, response) {
-                                    if (err) console.error(err);
-                                    else    console.log(response);
+                                post_dat.registration_ids = registrationTokens;
+                                var request = http.request(options, function (res) {
+                                    console.log("STATUS " + JSON.stringify(res.statusCode));
+                                    console.log("HEADERS " + JSON.stringify(res.headers));
+                                    res.setEncoding('utf8');
+                                    res.on('data', function (chunk) {
+                                        console.log("BODYYYY " + chunk);
+                                    })
                                 });
+                                request.on('error', function (e) {
+                                    console.log('problem with request ' + e.message);
+                                    console.log(e.stack);
+                                });
+                                request.write(post_dat);
+                                request.end();
+                                //sender.send(message, {registrationTokens: registrationTokens}, function (err, response) {
+                                //    if (err) console.error(err);
+                                //    else    console.log(response);
+                                //});
                             }
                         });
                         res.json([tag.messages]);
