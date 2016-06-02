@@ -175,17 +175,6 @@ exports.addMessage = function (req, res) {
                                 key2: 'message2'
                             }
                         };
-                        var options = {
-                            hostname: 'android.googleapis.com',
-                            port: 80,
-                            path: 'gcm/send',
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': 'key=AIzaSyD_3tq6_JFg5lJEzabvclnaSsUDSqvNqPE'
-                            }
-                        };
-
 
                         //var message = new gcm.Message();
                         //message.addData('key1', 'hello XXX');
@@ -219,7 +208,7 @@ exports.addMessage = function (req, res) {
 
 // set api key
                                 sender.setAPIKey('AIzaSyD_3tq6_JFg5lJEzabvclnaSsUDSqvNqPE');
-                                sender.sendMessage(message.toJSON(), registrationTokens, true, function(err, data) {
+                                sender.sendMessage(message.toJSON(), registrationTokens, false, function(err, data) {
                                         if (err) console.error(err);
                                         else    console.log(response);
                                 });
