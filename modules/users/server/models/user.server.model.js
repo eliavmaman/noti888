@@ -91,7 +91,7 @@ var UserSchema = new Schema({
             category: 'String'
         }
     ],
-    key: 'String',
+    token: 'String',
     updated: {
         type: Date
     },

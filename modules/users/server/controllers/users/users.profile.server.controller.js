@@ -106,8 +106,9 @@ exports.addTag = function (req, res) {
     var tagId = req.body.tagId;
     var tagName = req.body.tagName;
     var category = req.body.category;
+    var email= req.body.email;
     var exist_user = req.user;
-    console.log('USERID -' + exist_user._id);
+    console.log('EMAIL -' + email);
     console.log('tagId -' + tagId + ' tagna- ' + tagName + ' category- ' + category);
     return User.findOne({
         _id: exist_user._id
@@ -183,6 +184,46 @@ exports.removeTag = function (req, res) {
     });
     //   res.json(req.user || null);
 };
+
+exports.setToken = function (req, res) {
+    var token = req.body.token;
+    var email= req.body.email;
+
+    console.log('Token -----------' + token);
+    console.log('EMAIL -----------' + email);
+
+    return User.findOne({
+        username: email
+    }, function (err, user) {
+        if (err) {
+            return done(err);
+        }
+        //if (!user || !user.authenticate(password)) {
+        //    return done(null, false, {
+        //        message: 'Invalid username or password'
+        //    });
+        //}
+        user.token=token;
+        user.save(function (err) {
+            if (err) {
+                return res.status(400).send({
+                    message: errorHandler.getErrorMessage(err)
+                });
+            } else {
+                req.login(user, function (err) {
+                    if (err) {
+                        res.status(400).send(err);
+                    } else {
+                        res.json(user.token);
+                    }
+                });
+            }
+        });
+
+    });
+    //   res.json(req.user || null);
+};
+
 
 
 
