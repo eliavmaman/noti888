@@ -74,11 +74,11 @@ exports.mobilesignin = function (req, res, next) {
     //});
     console.log('request ' + JSON.stringify(req.body));
     req.body.username=req.body.email;
-    passport.authenticate('local', function (err, user, info) {
-        console.log('SIgn in user ' + JSON.stringify(user));
+
+    User.findOne({email:req.body.email}).exec(function (err, user) {
         if (err || !user) {
-            console.log('INFO-----------------' + JSON.stringify(info));
-          //  res.status(400).send(info);
+            //console.log('INFO-----------------' + JSON.stringify(info));
+            //  res.status(400).send(info);
 
             var u = {};
             u.username = req.body.email;
@@ -132,7 +132,66 @@ exports.mobilesignin = function (req, res, next) {
                 }
             });
         }
-    })(req, res, next);
+    });
+    //passport.authenticate('local', function (err, user, info) {
+    //    console.log('SIgn in user ' + JSON.stringify(user));
+    //    if (err || !user) {
+    //        console.log('INFO-----------------' + JSON.stringify(info));
+    //      //  res.status(400).send(info);
+    //
+    //        var u = {};
+    //        u.username = req.body.email;
+    //        u.firstName = req.body.email;
+    //        u.lastName = req.body.email;
+    //        u.password = 'qwe123';
+    //        u.email = req.body.email;
+    //        u.key=req.body.key;
+    //        console.log('AFTER-----------------' + JSON.stringify(u));
+    //        var user = new User(u);
+    //        var message = null;
+    //
+    //        // Add missing user fields
+    //        user.provider = 'local';
+    //        user.displayName = user.firstName + ' ' + user.lastName;
+    //
+    //        // Then save the user
+    //        user.save(function (err) {
+    //            if (err) {
+    //                return res.status(400).send({
+    //                    message: errorHandler.getErrorMessage(err)
+    //                });
+    //            } else {
+    //                // Remove sensitive data before login
+    //                user.password = undefined;
+    //                user.salt = undefined;
+    //
+    //                req.login(user, function (err) {
+    //                    if (err) {
+    //
+    //                        res.status(400).send(err);
+    //                    } else {
+    //
+    //                        res.json(user.tags);
+    //                    }
+    //                });
+    //            }
+    //        });
+    //    } else {
+    //        console.log('USERRRRRR ' + JSON.stringify(user));
+    //        // Remove sensitive data before login
+    //        user.password = undefined;
+    //        user.salt = undefined;
+    //
+    //        req.login(user, function (err) {
+    //            if (err) {
+    //                res.status(400).send(err);
+    //            } else {
+    //
+    //                res.json(user.tags);
+    //            }
+    //        });
+    //    }
+    //})(req, res, next);
 };
 
 exports.signin = function (req, res, next) {

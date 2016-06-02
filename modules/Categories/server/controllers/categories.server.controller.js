@@ -4,6 +4,7 @@
  * Module dependencies.
  */
 var path = require('path'),
+    async = require('async'),
     mongoose = require('mongoose'),
     Category = mongoose.model('Category'),
     User = mongoose.model('User'),
@@ -93,30 +94,54 @@ exports.list = function (req, res) {
 exports.getTagMessages = function (req, res) {
     var categoryId = req.params.categoryId;
     var tagId = req.params.tagId;
+    var email = req.query.email;
     console.log('-------------------GET TAG MESSAGES------------');
-    console.log('CategoryId ' + categoryId);
-    console.log('TAg id ' + tagId);
-
-    Category.findOne({_id: categoryId}).sort('-created').populate('user', 'displayName').exec(function (err, category) {
+    console.log('EMAIL ' + email);
+    console.log('CATEGOTY ID ' + categoryId);
+    console.log('TAG ID ' + tagId);
+    User.findOne({email: email}).exec(function (err, user) {
         if (err) {
             return res.status(400).send({
                 message: errorHandler.getErrorMessage(err)
             });
         } else {
-            console.log('CATEGORY ' + JSON.stringify(category));
-            var tag = _.find(category.tags, function (t) {
-                return t._id.toString() === tagId.toString();
+            user.tags.forEach(function (t) {
+                if (t._id.toString() === tagId.toString()) {
+                    t.counter = 0;
+                }
             });
-            console.log('Tag ' + JSON.stringify(tag));
-            if (tag) {
+            user.save(function (err) {
+                if (err) {
+                    return res.status(400).send({
+                        message: errorHandler.getErrorMessage(err)
+                    });
+                } else {
+                    Category.findOne({_id: categoryId}).sort('-created').exec(function (err, category) {
+                        if (err) {
+                            return res.status(400).send({
+                                message: errorHandler.getErrorMessage(err)
+                            });
+                        } else {
+                            console.log('CATEGORY ' + JSON.stringify(category));
+                            var tag = _.find(category.tags, function (t) {
+                                return t._id.toString() === tagId.toString();
+                            });
+                            console.log('Tag ' + JSON.stringify(tag));
+                            if (tag) {
 
 
-                res.json(tag.messages);
-            } else {
-                res.json([]);
-            }
+                                res.json(tag.messages);
+                            } else {
+                                res.json([]);
+                            }
+                        }
+                    });
+                }
+            });
+
         }
-    });
+    })
+
 };
 
 exports.addMessage = function (req, res) {
@@ -191,9 +216,14 @@ exports.addMessage = function (req, res) {
                             } else {
                                 console.log('Founded users ' + JSON.stringify(users));
                                 var registrationTokens = [];
+
                                 users.forEach(function (u) {
+                                    u.tags.forEach(function (t) {
+                                        t.counter = (t.counter + 1);
+                                    });
                                     registrationTokens.push(u.token);
                                 });
+
                                 var message = new gcm.Message({
                                     collapse_key: 'test',
                                     data: {
@@ -206,16 +236,24 @@ exports.addMessage = function (req, res) {
 
                                 var sender = new gcm.Sender();
 
-// set api key
                                 sender.setAPIKey('AIzaSyD_3tq6_JFg5lJEzabvclnaSsUDSqvNqPE');
-                                sender.sendMessage(message.toJSON(), registrationTokens, false, function(err, data) {
-                                        if (err) console.error(err);
-                                        else    console.log(response);
+                                sender.sendMessage(message.toJSON(), registrationTokens, false, function (err, data) {
+                                    if (err) console.error(err);
+                                    else    console.log(response);
                                 });
                                 //sender.send(message, {registrationTokens: registrationTokens}, function (err, response) {
                                 //    if (err) console.error(err);
                                 //    else    console.log(response);
                                 //});
+                                // var people = [ person1, person2, person3, person4, ... ];
+
+                                async.eachSeries(users, function (user, asyncdone) {
+                                    user.save(asyncdone);
+                                }, function (err) {
+                                    if (err) return console.log(err);
+                                    done(); // or `done(err)` if you want the pass the error up
+                                });
+
                             }
                         });
                         res.json([tag.messages]);
