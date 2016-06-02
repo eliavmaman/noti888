@@ -111,7 +111,7 @@ exports.addTag = function (req, res) {
     console.log('EMAIL -' + email);
     console.log('tagId -' + tagId + ' tagna- ' + tagName + ' category- ' + category);
     return User.findOne({
-        _id: exist_user._id
+        email: email
     }, function (err, user) {
         if (err) {
             return done(err);
