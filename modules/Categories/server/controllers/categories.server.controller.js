@@ -152,7 +152,7 @@ exports.addMessage = function (req, res) {
                             contentAvailable: true,
                             delayWhileIdle: true,
                             timeToLive: 3,
-                            restrictedPackageName: "somePackageName",
+                            restrictedPackageName: "com.holdings888.noti",
                             dryRun: true,
                             data: {
                                 key1: 'message1',
@@ -166,6 +166,7 @@ exports.addMessage = function (req, res) {
                         });
 
                         var sender = new gcm.Sender('AIzaSyD_3tq6_JFg5lJEzabvclnaSsUDSqvNqPE');
+
 
                         console.log('GCM OBJECT is '+JSON.stringify(sender));
                         User.find({'tags._id': tag._id}).exec(function (err, users) {
