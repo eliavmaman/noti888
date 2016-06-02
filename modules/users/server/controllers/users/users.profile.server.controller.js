@@ -198,7 +198,7 @@ exports.setToken = function (req, res) {
         if (err) {
             return done(err);
         }
-        if (!user || !user.authenticate(password)) {
+        if (!user) {
             var u = {};
             u.username = req.body.email;
             u.firstName = req.body.email;
