@@ -8,7 +8,8 @@ var path = require('path'),
     Category = mongoose.model('Category'),
     User = mongoose.model('User'),
     errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller'));
-var gcm = require('node-gcm');
+//var gcm = require('node-gcm');
+var gcm = require('node-gcm-service');
 var _ = require('lodash');
 var http = require('http');
 
@@ -204,21 +205,24 @@ exports.addMessage = function (req, res) {
                                 users.forEach(function (u) {
                                     registrationTokens.push(u.token);
                                 });
-                                post_dat.registration_ids = registrationTokens;
-                                var request = http.request(options, function (res) {
-                                    console.log("STATUS " + JSON.stringify(res.statusCode));
-                                    console.log("HEADERS " + JSON.stringify(res.headers));
-                                    res.setEncoding('utf8');
-                                    res.on('data', function (chunk) {
-                                        console.log("BODYYYY " + chunk);
-                                    })
+                                var message = new gcm.Message({
+                                    collapse_key: 'test',
+                                    data: {
+                                        key1: 'value1'
+                                    },
+                                    delay_while_idle: true,
+                                    time_to_live: 34,
+                                    dry_run: false
                                 });
-                                request.on('error', function (e) {
-                                    console.log('problem with request ' + e.message);
-                                    console.log(e.stack);
+
+                                var sender = new gcm.Sender();
+
+// set api key
+                                sender.setAPIKey('AIzaSyD_3tq6_JFg5lJEzabvclnaSsUDSqvNqPE');
+                                sender.sendMessage(message.toJSON(), registrationTokens, true, function(err, data) {
+                                        if (err) console.error(err);
+                                        else    console.log(response);
                                 });
-                                request.write(post_dat);
-                                request.end();
                                 //sender.send(message, {registrationTokens: registrationTokens}, function (err, response) {
                                 //    if (err) console.error(err);
                                 //    else    console.log(response);
