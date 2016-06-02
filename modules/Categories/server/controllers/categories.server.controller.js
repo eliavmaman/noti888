@@ -219,7 +219,9 @@ exports.addMessage = function (req, res) {
 
                                 users.forEach(function (u) {
                                     u.tags.forEach(function (t) {
-                                        t.counter = (t.counter + 1);
+                                        if(t._id.toString()===tagId.toString()) {
+                                            t.counter = (t.counter + 1);
+                                        }
                                     });
                                     registrationTokens.push(u.token);
                                 });
