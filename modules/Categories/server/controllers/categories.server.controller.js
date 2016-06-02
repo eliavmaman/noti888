@@ -176,7 +176,7 @@ exports.addMessage = function (req, res) {
                             } else {
                                 console.log('FOunded users ' + JSON.stringify(users));
                                 var registrationTokens = [];
-                                user.forEach(function (u) {
+                                users.forEach(function (u) {
                                     registrationTokens.push(u.token);
 
                                 });
