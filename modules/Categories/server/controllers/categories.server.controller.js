@@ -229,7 +229,8 @@ exports.addMessage = function (req, res) {
 
                                // gcm_message.addDataWithKeyValue('key1', 'daddadas');
                                 gcm_message.delayWhileIdle = true;
-                                gcm_message.addData('message', "\u270C Peace, Love \u2764 and PhoneGap \u2706!");
+                                //gcm_message.addData('message', "\u270C Peace, Love \u2764 and PhoneGap \u2706!");
+                                gcm_message.addData('message', message);
                                 gcm_message.addData('title', 'Push Notification Sample');
                                 gcm_message.addData('msgcnt', '3'); // Shows up in the notification in the status bar
                                 gcm_message.addData('soundname', 'beep.wav'); //Sound to play upon notification receipt - put in the www folder in app
@@ -276,14 +277,14 @@ exports.addMessage = function (req, res) {
                                 // var people = [ person1, person2, person3, person4, ... ];
 
 
-                                //async.eachSeries(users, function (user, asyncdone) {
-                                //    user.save(asyncdone);
-                                //}, function (err) {
-                                //    console.log('error save all users');
-                                //    if (err) return console.log(err);
-                                //    res.json(true);
-                                //    // done(); // or `done(err)` if you want the pass the error up
-                                //});
+                                async.eachSeries(users, function (user, asyncdone) {
+                                    user.save(asyncdone);
+                                }, function (err) {
+                                    console.log('error save all users');
+                                    if (err) return console.log(err);
+                                    res.json(true);
+                                    // done(); // or `done(err)` if you want the pass the error up
+                                });
 
                             }
                         });
