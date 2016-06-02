@@ -144,7 +144,8 @@ exports.addMessage = function (req, res) {
                             message: errorHandler.getErrorMessage(err)
                         });
                     } else {
-
+                        console.log('tags saved with new message');
+                        console.log('before sending message');
                         var message = new gcm.Message({
                             collapseKey: 'demo',
                             priority: 'high',
@@ -163,11 +164,10 @@ exports.addMessage = function (req, res) {
                                 body: "This is a notification that will be displayed ASAP."
                             }
                         });
-                        var sender = new gcm.Sender('insert Google Server API Key here');
 
                         var sender = new gcm.Sender('AIzaSyD_3tq6_JFg5lJEzabvclnaSsUDSqvNqPE');
 
-
+                        console.log('GCM OBJECT is '+JSON.stringify(sender));
                         User.find({'tags._id': tag._id}).exec(function (err, user) {
                             if (err) {
                                 return res.status(400).send({
