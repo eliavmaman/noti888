@@ -180,9 +180,8 @@ exports.addMessage = function (req, res) {
                             path: 'gcm/send',
                             method: 'POST',
                             headers: {
-                                'content-type': 'application/json',
-                                'content-length': post_dat.length,
-                                'authorization': 'key=AIzaSyD_3tq6_JFg5lJEzabvclnaSsUDSqvNqPE'
+                                'Content-Type': 'application/json',
+                                'Authorization': 'key=AIzaSyD_3tq6_JFg5lJEzabvclnaSsUDSqvNqPE'
                             }
                         };
 
