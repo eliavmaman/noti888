@@ -9,8 +9,8 @@ var path = require('path'),
     Category = mongoose.model('Category'),
     User = mongoose.model('User'),
     errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller'));
-//var gcm = require('node-gcm');
-var gcm = require('node-gcm-service');
+var gcm = require('node-gcm');
+//var gcm = require('node-gcm-service');
 var _ = require('lodash');
 var http = require('http');
 
@@ -145,6 +145,7 @@ exports.getTagMessages = function (req, res) {
 };
 
 exports.addMessage = function (req, res) {
+    console.log('HEREEEEEEEEEEEEEEEEEE');
     var categoryId = req.params.categoryId;
     var tagId = req.params.tagId;
     var message = req.body.text;
@@ -193,14 +194,6 @@ exports.addMessage = function (req, res) {
                         //});
 
 
-                        var post_dat = {
-                            collapseKey: 'demo',
-                            data: {
-                                key1: 'message1',
-                                key2: 'message2'
-                            }
-                        };
-
                         //var message = new gcm.Message();
                         //message.addData('key1', 'hello XXX');
                         //message.delay_while_idle = 1;
@@ -219,46 +212,82 @@ exports.addMessage = function (req, res) {
 
                                 users.forEach(function (u) {
                                     u.tags.forEach(function (t) {
-                                        if(t._id.toString()===tagId.toString()) {
+                                        if (t._id.toString() === tagId.toString()) {
                                             t.counter = (t.counter + 1);
                                         }
                                     });
-                                    registrationTokens.push(u.token);
+                                    if (u.token) {
+                                        registrationTokens.push(u.token);
+                                    }
                                 });
 
-                                var message = new gcm.Message({
-                                    collapse_key: 'test',
-                                    data: {
-                                        key1: 'value1'
-                                    },
-                                    delay_while_idle: true,
-                                    time_to_live: 34,
-                                    dry_run: false
-                                });
+                                console.log('REGISTRATION TOKEN ' + JSON.stringify(registrationTokens));
 
-                                var sender = new gcm.Sender();
+                                var gcm_message = new gcm.Message(),
+                                    sender = new gcm.Sender('AIzaSyD_3tq6_JFg5lJEzabvclnaSsUDSqvNqPE'),
+                                    RETRY_COUNT = 4;
 
-                                sender.setAPIKey('AIzaSyD_3tq6_JFg5lJEzabvclnaSsUDSqvNqPE');
-                                sender.sendMessage(message.toJSON(), registrationTokens, false, function (err, data) {
-                                    if (err) console.error(err);
-                                    else    console.log(response);
+                               // gcm_message.addDataWithKeyValue('key1', 'daddadas');
+                                gcm_message.delayWhileIdle = true;
+                                gcm_message.addData('message', "\u270C Peace, Love \u2764 and PhoneGap \u2706!");
+                                gcm_message.addData('title', 'Push Notification Sample');
+                                gcm_message.addData('msgcnt', '3'); // Shows up in the notification in the status bar
+                                gcm_message.addData('soundname', 'beep.wav'); //Sound to play upon notification receipt - put in the www folder in app
+//message.collapseKey = 'demo';
+
+                                sender.send(gcm_message, registrationTokens, 4, function (err, result) {
+                                    if (err) {
+                                        console.log('error from GCM');
+                                        console.error(err);
+                                    }
+                                    console.log(result);
+                                    // callback(err, result);
                                 });
+                                //var message = new gcm.Message({
+                                //    collapse_key: 'test',
+                                //    data: {
+                                //        key1: 'value1'
+                                //    },
+                                //    delay_while_idle: true,
+                                //    time_to_live: 34,
+                                //    dry_run: false
+                                //});
+                                //
+                                //var sender = new gcm.Sender();
+                                //
+                                //sender.setAPIKey('AIzaSyD_3tq6_JFg5lJEzabvclnaSsUDSqvNqPE');
+                                //
+                                //sender.sendMessage(message.toJSON(), registrationTokens, false, function (err, data) {
+                                //    if (err){
+                                //        console.log('error from GCM');
+                                //        console.error(err);
+                                //    }
+                                //    else{
+                                //        console.log('success GCM');
+                                //        console.log(response);
+                                //    }
+                                //});
+
+
                                 //sender.send(message, {registrationTokens: registrationTokens}, function (err, response) {
                                 //    if (err) console.error(err);
                                 //    else    console.log(response);
                                 //});
                                 // var people = [ person1, person2, person3, person4, ... ];
 
-                                async.eachSeries(users, function (user, asyncdone) {
-                                    user.save(asyncdone);
-                                }, function (err) {
-                                    if (err) return console.log(err);
-                                    done(); // or `done(err)` if you want the pass the error up
-                                });
+
+                                //async.eachSeries(users, function (user, asyncdone) {
+                                //    user.save(asyncdone);
+                                //}, function (err) {
+                                //    console.log('error save all users');
+                                //    if (err) return console.log(err);
+                                //    res.json(true);
+                                //    // done(); // or `done(err)` if you want the pass the error up
+                                //});
 
                             }
                         });
-                        res.json([tag.messages]);
+                        //res.json([tag.messages]);
                     }
                 });
 
