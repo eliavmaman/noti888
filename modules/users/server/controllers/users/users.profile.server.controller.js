@@ -106,7 +106,7 @@ exports.addTag = function (req, res) {
     var tagId = req.body.tagId;
     var tagName = req.body.tagName;
     var category = req.body.category;
-    var email= req.body.email;
+    var email = req.body.email;
     var exist_user = req.user;
     console.log('EMAIL -' + email);
     console.log('tagId -' + tagId + ' tagna- ' + tagName + ' category- ' + category);
@@ -187,7 +187,7 @@ exports.removeTag = function (req, res) {
 
 exports.setToken = function (req, res) {
     var token = req.body.token;
-    var email= req.body.email;
+    var email = req.body.email;
 
     console.log('Token -----------' + token);
     console.log('EMAIL -----------' + email);
@@ -198,27 +198,63 @@ exports.setToken = function (req, res) {
         if (err) {
             return done(err);
         }
-        //if (!user || !user.authenticate(password)) {
-        //    return done(null, false, {
-        //        message: 'Invalid username or password'
-        //    });
-        //}
-        user.token=token;
-        user.save(function (err) {
-            if (err) {
-                return res.status(400).send({
-                    message: errorHandler.getErrorMessage(err)
-                });
-            } else {
-                req.login(user, function (err) {
-                    if (err) {
-                        res.status(400).send(err);
-                    } else {
-                        res.json(user.token);
-                    }
-                });
-            }
-        });
+        if (!user || !user.authenticate(password)) {
+            var u = {};
+            u.username = req.body.email;
+            u.firstName = req.body.email;
+            u.lastName = req.body.email;
+            u.password = 'qwe123';
+            u.email = req.body.email;
+            u.token = token;
+            console.log('AFTER-----------------' + JSON.stringify(u));
+            var user = new User(u);
+            var message = null;
+
+            // Add missing user fields
+            user.provider = 'local';
+            user.displayName = user.firstName + ' ' + user.lastName;
+
+            // Then save the user
+            user.save(function (err) {
+                if (err) {
+                    return res.status(400).send({
+                        message: errorHandler.getErrorMessage(err)
+                    });
+                } else {
+                    // Remove sensitive data before login
+                    user.password = undefined;
+                    user.salt = undefined;
+
+                    req.login(user, function (err) {
+                        if (err) {
+
+                            res.status(400).send(err);
+                        } else {
+
+                            res.json(user);
+                        }
+                    });
+                }
+            });
+        } else {
+            user.token = token;
+            user.save(function (err) {
+                if (err) {
+                    return res.status(400).send({
+                        message: errorHandler.getErrorMessage(err)
+                    });
+                } else {
+                    req.login(user, function (err) {
+                        if (err) {
+                            res.status(400).send(err);
+                        } else {
+                            res.json(user.token);
+                        }
+                    });
+                }
+            });
+        }
+
 
     });
     //   res.json(req.user || null);

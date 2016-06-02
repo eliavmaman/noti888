@@ -109,7 +109,9 @@ exports.getTagMessages = function (req, res) {
             body: "This is a notification that will be displayed ASAP."
         }
     });
-    var sender = new gcm.Sender('AIzaSyC4z6DS37mFtIrpn55Yicr59SpA84WV7nE');
+    var sender = new gcm.Sender('insert Google Server API Key here');
+
+    var sender = new gcm.Sender('AIzaSyD_3tq6_JFg5lJEzabvclnaSsUDSqvNqPE');
 
     Category.findOne({_id: categoryId}).sort('-created').populate('user', 'displayName').exec(function (err, category) {
         if (err) {
