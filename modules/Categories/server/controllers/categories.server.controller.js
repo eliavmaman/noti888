@@ -192,8 +192,6 @@ exports.addMessage = function (req, res) {
                         //        body: "This is a notification that will be displayed ASAP."
                         //    }
                         //});
-
-
                         //var message = new gcm.Message();
                         //message.addData('key1', 'hello XXX');
                         //message.delay_while_idle = 1;
@@ -242,6 +240,8 @@ exports.addMessage = function (req, res) {
                                         console.error(err);
                                     }
                                     console.log(result);
+                                    res.json(result);
+
                                     // callback(err, result);
                                 });
                                 //var message = new gcm.Message({
@@ -282,7 +282,7 @@ exports.addMessage = function (req, res) {
                                 }, function (err) {
                                     console.log('error save all users');
                                     if (err) return console.log(err);
-                                    res.json(true);
+
                                     // done(); // or `done(err)` if you want the pass the error up
                                 });
 
