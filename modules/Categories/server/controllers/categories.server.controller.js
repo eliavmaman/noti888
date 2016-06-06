@@ -151,9 +151,10 @@ exports.addMessage = function (req, res) {
     var message = req.body.text;
     var email = req.body.email;
     var user = req.body.user;
-
+    var savedCategory;
     console.log('TAg id ' + tagId);
-    Category.findOne({_id: categoryId}).sort('-created').populate('user', 'displayName').exec(function (err, category) {
+    Category.findOne({_id: categoryId}).sort('-created').populate('user', 'displayName')
+        .exec(function (err, category) {
         if (err) {
             return res.status(400).send({
                 message: errorHandler.getErrorMessage(err)
@@ -166,7 +167,7 @@ exports.addMessage = function (req, res) {
             console.log('Tag ' + JSON.stringify(tag));
             if (tag) {
                 tag.messages.push({text: message, email: email});
-                category.save(function (err) {
+               return category.save(function (err, savedCategory) {
                     if (err) {
                         return res.status(400).send({
                             message: errorHandler.getErrorMessage(err)
@@ -174,32 +175,8 @@ exports.addMessage = function (req, res) {
                     } else {
                         console.log('tags saved with new message');
                         console.log('before sending message');
-                        //var message = new gcm.Message({
-                        //    collapseKey: 'demo',
-                        //    priority: 'high',
-                        //    contentAvailable: true,
-                        //    delayWhileIdle: true,
-                        //    timeToLive: 3,
-                        //    restrictedPackageName: "com.holdings888.noti",
-                        //    dryRun: true,
-                        //    data: {
-                        //        key1: 'message1',
-                        //        key2: 'message2'
-                        //    },
-                        //    notification: {
-                        //        title: "Hello, World",
-                        //        icon: "ic_launcher",
-                        //        body: "This is a notification that will be displayed ASAP."
-                        //    }
-                        //});
-                        //var message = new gcm.Message();
-                        //message.addData('key1', 'hello XXX');
-                        //message.delay_while_idle = 1;
-                        //
-                        //var sender = new gcm.Sender('AIzaSyD_3tq6_JFg5lJEzabvclnaSsUDSqvNqPE');
-
-                        // console.log('GCM OBJECT is ' + JSON.stringify(sender));
-                        User.find({'tags._id': tag._id}).exec(function (err, users) {
+                        console.log('savedCategory is ' + JSON.stringify(savedCategory));
+                        User.find({'tags._id': tagId}).exec(function (err, users) {
                             if (err) {
                                 return res.status(400).send({
                                     message: errorHandler.getErrorMessage(err)
@@ -225,56 +202,37 @@ exports.addMessage = function (req, res) {
                                     sender = new gcm.Sender('AIzaSyD_3tq6_JFg5lJEzabvclnaSsUDSqvNqPE'),
                                     RETRY_COUNT = 4;
 
-                               // gcm_message.addDataWithKeyValue('key1', 'daddadas');
+                                // gcm_message.addDataWithKeyValue('key1', 'daddadas');
                                 gcm_message.delayWhileIdle = true;
                                 //gcm_message.addData('message', "\u270C Peace, Love \u2764 and PhoneGap \u2706!");
                                 gcm_message.addData('message', message);
                                 gcm_message.addData('title', 'Push Notification Sample');
                                 gcm_message.addData('msgcnt', '3'); // Shows up in the notification in the status bar
                                 gcm_message.addData('soundname', 'beep.wav'); //Sound to play upon notification receipt - put in the www folder in app
-//message.collapseKey = 'demo';
+                                //message.collapseKey = 'demo';
 
                                 sender.send(gcm_message, registrationTokens, 4, function (err, result) {
                                     if (err) {
                                         console.log('error from GCM');
                                         console.error(err);
                                     }
-                                    console.log(result);
-                                    res.json(result);
+
+                                    var savedTag = _.find(savedCategory.tags, function (t) {
+                                        return t._id.toString() === tagId.toString();
+                                    });
+
+                                   // console.log('savedTag  is ' + JSON.stringify(savedTag));
+                                   // return savedTag;
+                                    if (savedTag.messages.length > 0) {
+                                        var last=savedTag.messages[savedTag.messages.length - 1];
+                                        console.log('Return Message is ' + JSON.stringify(last));
+                                         res.json(last);
+                                    } else {
+                                        res.json(null);
+                                    }
 
                                     // callback(err, result);
                                 });
-                                //var message = new gcm.Message({
-                                //    collapse_key: 'test',
-                                //    data: {
-                                //        key1: 'value1'
-                                //    },
-                                //    delay_while_idle: true,
-                                //    time_to_live: 34,
-                                //    dry_run: false
-                                //});
-                                //
-                                //var sender = new gcm.Sender();
-                                //
-                                //sender.setAPIKey('AIzaSyD_3tq6_JFg5lJEzabvclnaSsUDSqvNqPE');
-                                //
-                                //sender.sendMessage(message.toJSON(), registrationTokens, false, function (err, data) {
-                                //    if (err){
-                                //        console.log('error from GCM');
-                                //        console.error(err);
-                                //    }
-                                //    else{
-                                //        console.log('success GCM');
-                                //        console.log(response);
-                                //    }
-                                //});
-
-
-                                //sender.send(message, {registrationTokens: registrationTokens}, function (err, response) {
-                                //    if (err) console.error(err);
-                                //    else    console.log(response);
-                                //});
-                                // var people = [ person1, person2, person3, person4, ... ];
 
 
                                 async.eachSeries(users, function (user, asyncdone) {
@@ -288,17 +246,15 @@ exports.addMessage = function (req, res) {
 
                             }
                         });
-                        //res.json([tag.messages]);
                     }
                 });
 
             } else {
-                res.json([]);
+                return null;
             }
-
-
         }
     });
+
 };
 
 
