@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<body>
+
+</body>
+<script type="text/javascript">
+  var clock = new PointText();
+  clock.justification = 'center';
+  clock.fontSize = '40px';
+  clock.position = [100,100];
+  clock.content = '';
+
+  function tick() {
+    var today = new Date();
+    var h = today.getHours();
+    var m = today.getMinutes();
+    var s = today.getSeconds();
+
+    // add 0's if needed
+    m = checkTime(m);
+    s = checkTime(s);
+    //h = ((h + 11) % 12 + 1);
+
+    // put the text inside the clock text item
+    clock.content =    h + ":" + m + ":" + s;
+  }
+
+  function checkTime(i) {
+    // add zero in front of numbers < 10
+    if (i < 10) {
+      i = "0" + i
+    };
+    return i;
+  }
+
+  function onFrame() {
+    tick();
+  }
+</script>
+</html>
