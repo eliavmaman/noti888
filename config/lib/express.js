@@ -17,6 +17,7 @@ var config = require('../config'),
   helmet = require('helmet'),
   flash = require('connect-flash'),
   consolidate = require('consolidate'),
+    cors = require('cors'),
   path = require('path');
 
 
@@ -39,6 +40,8 @@ module.exports.initLocalVariables = function (app) {
   app.locals.logo = config.logo;
   app.locals.favicon = config.favicon;
 
+
+  app.use(cors());
   // Passing the request url to environment locals
   app.use(function (req, res, next) {
     res.locals.host = req.protocol + '://' + req.hostname;
