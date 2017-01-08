@@ -25,6 +25,11 @@ var CidSchema = new Schema({
     default: '',
     trim: true
   },
+  comment: {
+    type: String,
+    default: '',
+    trim: true
+  },
   env: {
     type: String,
     default: '',
