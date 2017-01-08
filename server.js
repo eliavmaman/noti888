@@ -5,6 +5,6 @@
  */
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 var app = require('./config/lib/app');
-var cors = require('cors');
+
 
 var server = app.start();
