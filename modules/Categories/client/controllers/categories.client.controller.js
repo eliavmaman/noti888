@@ -1,12 +1,15 @@
 'use strict';
 
 // Categories controller
-angular.module('categories').controller('CategoriesController', ['$scope', '$stateParams', '$location', 'Authentication', 'Categories',
-    function ($scope, $stateParams, $location, Authentication, Categories) {
+angular.module('categories').controller('CategoriesController', ['$scope', '$stateParams', '$location', 'Authentication', 'Categories', '$http',
+    function ($scope, $stateParams, $location, Authentication, Categories, $http) {
         $scope.authentication = Authentication;
         $scope.tags = [];
         $scope.savedCategory = null;
-
+        $http.get('cids').then(function (res) {
+            var data = res;
+            console.log(data);
+        })
         // Create new Category
         $scope.create = function (isValid) {
             $scope.error = null;

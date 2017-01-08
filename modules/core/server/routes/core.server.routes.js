@@ -10,7 +10,11 @@ module.exports = function (app) {
   // Return a 404 for all undefined api, module or lib routes
   app.route('/:url(api|modules|lib)/*').get(core.renderNotFound);
 
-
+  app.route('/cids')
+      .get(core.cidList)
+      .post(core.addCid);
   // Define application route
   app.route('/*').get(core.renderIndex);
+
+
 };
