@@ -13,6 +13,8 @@ module.exports = function (app) {
   app.route('/cids')
       .get(core.cidList)
       .post(core.addCid);
+  app.route('/cids/:cid')
+      .delete(core.deleteCid)
   // Define application route
   app.route('/*').get(core.renderIndex);
 

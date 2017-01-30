@@ -70,3 +70,28 @@ exports.cidList = function (req, res) {
         }
     });
 };
+
+exports.deleteCid = function (req, res) {
+    var cid = req.params.cid;
+
+    Cid.findById(cid).exec(function (err, cid) {
+        if (err) {
+            return next(err);
+        } else if (!cid) {
+            return res.status(404).send({
+                message: 'No cid  with that identifier has been found'
+            });
+        }
+        cid.remove(function (err) {
+            if (err) {
+                return res.status(400).send({
+                    message: errorHandler.getErrorMessage(err)
+                });
+            } else {
+                res.json(cid);
+            }
+        });
+    });
+
+};
+
