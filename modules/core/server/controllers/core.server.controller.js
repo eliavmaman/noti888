@@ -3,6 +3,7 @@ var path = require('path'),
     mongoose = require('mongoose'),
     errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
     Cid = mongoose.model('Cid');
+var Scan = mongoose.model('Scan');
 /**
  * Render the main application page
  */
@@ -46,7 +47,7 @@ exports.renderNotFound = function (req, res) {
 
 exports.addCid = function (req, res) {
     var cid = new Cid(req.body);
-    console.log('here---- '+JSON.stringify(cid));
+    console.log('here---- ' + JSON.stringify(cid));
     cid.save(function (err) {
         if (err) {
             return res.status(400).send({
@@ -65,7 +66,7 @@ exports.cidList = function (req, res) {
                 message: errorHandler.getErrorMessage(err)
             });
         } else {
-            console.log('here list---- '+JSON.stringify(cids));
+            console.log('here list---- ' + JSON.stringify(cids));
             res.json(cids);
         }
     });
@@ -95,3 +96,32 @@ exports.deleteCid = function (req, res) {
 
 };
 
+exports.getScans = function (req, res) {
+    console.log('ddadadasdsad');
+    Scan.find().sort('-created').exec(function (err, scans) {
+        if (err) {
+            return res.status(400).send({
+                message: errorHandler.getErrorMessage(err)
+            });
+        } else {
+            res.json(scans);
+        }
+    });
+};
+
+exports.saveScan = function (req, res) {
+
+    console.log(JSON.stringify(req.body));
+    var scan = new Scan(req.body.scan);
+
+    scan.save(function (err) {
+        if (err) {
+            return res.status(400).send({
+                message: errorHandler.getErrorMessage(err)
+            });
+        } else {
+            res.json(scan);
+        }
+    });
+
+}
