@@ -125,3 +125,21 @@ exports.saveScan = function (req, res) {
     });
 
 }
+exports.createScan = function (req, res) {
+
+    console.log(JSON.stringify(req.body));
+    var text = req.body.text;
+    var scan = new Scan();
+    scan.text=text;
+
+    scan.save(function (err) {
+        if (err) {
+            return res.status(400).send({
+                message: errorHandler.getErrorMessage(err)
+            });
+        } else {
+            res.json(scan);
+        }
+    });
+
+}
