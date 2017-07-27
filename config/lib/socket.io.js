@@ -62,10 +62,10 @@ module.exports = function (app, db) {
     //server.listen(3000);
     // Create a new Socket.io server
 
-    var io = socketio.listen(server);
+    var io = socketio.listen(server,{origins:'*:*'});
     //io.set('origins', 'https://noti8.herokuapp.com');
     //io.set('origins', '*');
-    io.origins('*');
+    // io.origins('*');
 
     global.io = io;
     // Create a MongoDB storage object
