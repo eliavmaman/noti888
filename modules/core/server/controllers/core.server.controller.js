@@ -4,6 +4,9 @@ var path = require('path'),
     errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
     Cid = mongoose.model('Cid');
 var Scan = mongoose.model('Scan');
+var socketio = require('socket.io');
+
+var io = require('socket.io');
 /**
  * Render the main application page
  */
@@ -130,7 +133,7 @@ exports.createScan = function (req, res) {
     console.log(JSON.stringify(req.body));
     var text = req.body.text;
     var scan = new Scan();
-    scan.text=text;
+    scan.text = text;
 
     scan.save(function (err) {
         if (err) {
@@ -138,6 +141,7 @@ exports.createScan = function (req, res) {
                 message: errorHandler.getErrorMessage(err)
             });
         } else {
+
             res.json(scan);
         }
     });
