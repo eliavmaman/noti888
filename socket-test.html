@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <script src="public/lib/jquery/dist/jquery.js"></script>
+  <script type="text/javascript" src="https://noti8.herokuapp.com/socket.io/socket.io.js"></script>
+  <script type="text/javascript">
+
+    var cloudSocket;
+
+    $(document)
+      .ready(function() {
+        initYamBaScanSocket();
+      });
+
+    function initYamBaScanSocket() {
+      cloudSocket = io.connect("https://noti8.herokuapp.com:3000");
+
+      cloudSocket.on('connect',
+        function() {
+          console.log("connected to heroku, waiting for scans...");
+        });
+
+      cloudSocket.on('scanMessage',
+        function(scannedText) {
+          yamBa.packageScan.searchUser(scannedText);
+        });
+
+      // errors
+      function error(err) {
+        console.log("error");
+        console.log(err ? err : 'A unknown error occurred');
+        cloudSocket.disconnect();
+      }
+
+      cloudSocket.on("connect_error", error);
+      cloudSocket.on("connect_timeout", error);
+      cloudSocket.on("error", error);
+      cloudSocket.on("disconnect", error);
+    }
+
+  </script>
+</head>
+<body>
+
+</body>
+</html>

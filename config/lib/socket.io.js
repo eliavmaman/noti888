@@ -54,15 +54,19 @@ module.exports = function (app, db) {
 
         // Create new HTTPS Server
         server = https.createServer(options, app);
+
     } else {
         // Create a new HTTP server
         server = http.createServer(app);
     }
+    //server.listen(3000);
     // Create a new Socket.io server
 
     var io = socketio.listen(server);
     //io.set('origins', 'https://noti8.herokuapp.com');
-    io.set('origins', '*');
+    //io.set('origins', '*');
+    io.origins('*');
+
     global.io = io;
     // Create a MongoDB storage object
     var mongoStore = new MongoStore({
