@@ -61,7 +61,8 @@ module.exports = function (app, db) {
     // Create a new Socket.io server
 
     var io = socketio.listen(server);
-    io.set('origins', 'https://noti8.herokuapp.com');
+    //io.set('origins', 'https://noti8.herokuapp.com');
+    io.set('origins', '*');
     global.io = io;
     // Create a MongoDB storage object
     var mongoStore = new MongoStore({
