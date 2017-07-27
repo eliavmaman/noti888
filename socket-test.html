@@ -15,7 +15,7 @@
       });
 
     function initYamBaScanSocket() {
-      cloudSocket = io.connect("https://noti8.herokuapp.com:3000");
+      cloudSocket = io.connect("https://noti8.herokuapp.com:443");
 
       cloudSocket.on('connect',
         function() {
