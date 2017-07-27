@@ -1,7 +1,7 @@
 'use strict';
+function Global(){
 
-module.exports = function () {
-
-    var data = {}
-    return data;
 }
+Global.io={}
+
+module.exports = exports = new Global();
