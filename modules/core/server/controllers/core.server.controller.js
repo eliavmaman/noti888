@@ -4,7 +4,7 @@ var path = require('path'),
     errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
     Cid = mongoose.model('Cid');
 var Scan = mongoose.model('Scan');
-var global = require('socket.io');
+var global = require('../../../../config/lib/global');
 
 var io = require('../../../../config/lib/global');
 /**
