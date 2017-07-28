@@ -141,6 +141,8 @@ exports.createScan = function (req, res) {
                 message: errorHandler.getErrorMessage(err)
             });
         } else {
+            console.log('XXXXXXXXX');
+            console.log(global.io);
             global.io.emit('scanMessage', scan);
             res.json(scan);
         }

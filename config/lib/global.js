@@ -1,7 +1,7 @@
 'use strict';
-function Global(){
+function Global() {
 
 }
-Global.io={}
+Global.prototype.io = {}
 
 module.exports = exports = new Global();
