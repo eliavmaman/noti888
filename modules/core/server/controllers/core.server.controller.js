@@ -142,7 +142,7 @@ exports.createScan = function (req, res) {
             });
         } else {
             console.log('XXXXXXXXX');
-            console.log(global.io);
+            console.log(global.io.emit);
             global.io.emit('scanMessage', scan);
             res.json(scan);
         }
