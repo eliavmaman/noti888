@@ -63,7 +63,7 @@ module.exports = function (app, db) {
     // Create a new Socket.io server
 
 
-    var io = socketio.listen(server,{origins:'*:*'});
+    var io = socketio.listen(server, {origins: '*:*'});
     //io.set('origins', 'https://noti8.herokuapp.com');
     //io.set('origins', '*');
     // io.origins('*');

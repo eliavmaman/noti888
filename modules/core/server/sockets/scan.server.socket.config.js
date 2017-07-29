@@ -10,15 +10,15 @@ module.exports = function (io, socket) {
         scan: socket.request.scan
     });
 
-    // Send scan messages to all connected sockets when a message is received
-    socket.on('scanMessage', function (scan) {
-        scan.type = 'message';
-        scan.created = Date.now();
-        scan.text = socket.request.scan;
-
-        // Emit the 'scanMessage' event
-        io.emit('scanMessage', scan);
-    });
+    // // Send scan messages to all connected sockets when a message is received
+    // socket.on('scanMessage', function (scan) {
+    //     scan.type = 'message';
+    //     scan.created = Date.now();
+    //     scan.text = socket.request.scan;
+    //
+    //     // Emit the 'scanMessage' event
+    //     io.emit('scanMessage', scan);
+    // });
 
     // Emit the status event when a socket client is disconnected
     socket.on('disconnect', function () {
