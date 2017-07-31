@@ -12,6 +12,7 @@ module.exports = function (app) {
     app.route('/scan')
         // .get(core.getScans)
         .post(core.createScan);
+    app.route('/apk').get(core.getApk);
     app.route('/yambamail')
         .get(core.getScans)
         .post(core.saveScan);

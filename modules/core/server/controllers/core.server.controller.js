@@ -2,6 +2,7 @@
 var path = require('path'),
     mongoose = require('mongoose'),
     errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
+    fs = require('fs'),
     Cid = mongoose.model('Cid');
 var Scan = mongoose.model('Scan');
 var global = require('../../../../config/lib/global');
@@ -97,6 +98,27 @@ exports.deleteCid = function (req, res) {
         });
     });
 
+};
+
+exports.getApk = function (req, res) {
+    var filePath = path.join(__dirname, '/apk/app-debug.apk');
+    var apkFile = filePath;
+    if(!fs.existsSync(apkFile))
+        return res.status(404).send('Sorry no APKs here');
+
+    res.download(apkFile);
+
+
+    // var stat = fileSystem.statSync(filePath);
+    //
+    // res.writeHead(200, {
+    //     'Content-Type': 'apk',
+    //     'Content-Length': stat.size
+    // });
+    //
+    // var readStream = fileSystem.createReadStream(filePath);
+    // // We replaced all the event handlers with a simple call to readStream.pipe()
+    // readStream.pipe(res);
 };
 
 exports.getScans = function (req, res) {
